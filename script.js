@@ -1,403 +1,419 @@
-const container_daftar_items = document.getElementById('daftar-items')
-const add_item = document.getElementById('add-item')
-const set_data = document.getElementById('set-data')
-const get_data = document.getElementById('get-data')
-const root = document.querySelector('body')
-const index = root.id == 'index';
+class Databases {
+	constructor(){
+		this.dbname = "daily-task"
+		this.model = function(payload){
 
-const X_MASTER_KEY = "for private";
-const BIN_ID = "for private";
+			const itemnamemax = 128
 
-add_item.addEventListener('click',() => {
-	create_element_input('add')
-})
+			const result = {
+				status: 200,
+				message: "",
+				payload: {
+					item_name: payload.item_name,
+					checklist: payload.checklist,
+					priority_level: payload.priority_level,
+					id: payload.id,
+					wait: payload.wait
+				}
+			}
+			
+			// validasi item name
+			if(payload.item_name === undefined){
+				result.status = 300
+				result.message = "empty item name"
+				return result
+			}
+			if(typeof payload.item_name != "string"){
+				result.status = 300
+				result.message = "item name is not valid"
+				return result
+			}
+			if(payload.item_name.length > itemnamemax){
+				result.status = 300
+				result.message = "item name is too long"
+				return result
+			}
 
-set_data.addEventListener('dblclick',() => {
-	set_to_server()
-})
-
-get_data.addEventListener('dblclick',() => {
-	get_from_server()
-})
+			if(payload.item_name.length < 1){
+				result.status = 300
+				result.message = "item name is too short"
+				return result
+			}
 
 
-// FUNCTION 
-// DATA
-function get_data_storage(){
-	const data = localStorage.getItem('daily-task');
+			// validasi checklist
+			if(typeof payload.checklist != "boolean"){
+				result.payload.checklist = false
+			}
 
-	const ambil = data ? JSON.parse(data) : new Array();
+			// validasi priority_level
+			if(typeof payload.priority_level != "number"){
+				result.payload.priority_level = 0
+			}
 
-	const ceklistEsok = cekChecklist(ambil);
+			// validasi id 
+			if(payload.id === undefined){
+				result.payload.id = Date.now()
+			}
 
-	// cek data checklist yang belum valid
-	const result = ceklistEsok.map(item => {
+			// validasi wait
+			if(typeof payload.wait != "boolean"){
+				result.payload.wait = false
+			}
 
-		const convert = typeof item.checklist === 'boolean' ? item.checklist ? {checklist: true, time: Date.now()} : {checklist: false} : item.checklist
+			result.status = 200
+			result.message = "sukses membuat model"
+
+			return result
+		}
+		this.validasidata = function(data){
+			let resdata = data
+			if(data === null){
+				return []
+			}else if(typeof data === "string"){
+				try {
+					const newdata = JSON.parse(data)
+					resdata = newdata
+				} catch(err) {
+					resdata = []
+				}
+			}else if(typeof data === "object"){
+				if(data.length === undefined){
+					resdata = []
+				}
+			}
+
+			// validasi beberapa element yang memiliki key tidak valid
+			const datasementara = []
+			for(let i = 0; i < resdata.length; i++){
+				const item = resdata[i]
+				const check = this.model(item)
+				if(check.status === 200){
+					datasementara.push(check.payload)
+				}
+			}
+			resdata = datasementara
+
+			return resdata
+		}
+	}
+
+	getlocal(){
+		const db = localStorage.getItem(this.dbname)
+		return this.validasidata(db)
+	}
+
+	setlocal(newdata){
+		const validasi = this.validasidata(newdata)
+		localStorage.setItem(this.dbname,JSON.stringify(validasi))
+		return {
+			status: 200,
+			message: "Sukses mengubah data"
+		}
+	}
+
+	get cloud(){
+
+	}
+
+	set cloud(payload){
+
+	}
+}
+
+class Models extends Databases {
+
+	constructor(){
+		super()
+		this.totalitem = 5
+		this.validasiquery = function(query){
+
+			const queryerror = {
+				status: 300,
+				message: "query error"
+			}
+			const queryvalid = {}
+			if(!query) return queryerror
+
+			if(typeof query != "object") return queryerror
+
+			const model = this.model({ item_name: "example" })
+			const queryentrie = Object.entries(query)
+
+			if(queryentrie.length > this.totalitem) return queryerror
+
+			let wrongquery = 0
+
+			for(let i = 0; i < queryentrie.length; i++){
+				const [keyquery,valuequery] = queryentrie[i]
+				if(model.payload[keyquery] === undefined){
+					wrongquery += 1
+				}else{
+					queryvalid[keyquery] = valuequery
+				}
+
+				if(wrongquery > 1) return queryerror
+			}	
+
+			return {
+				status: 200,
+				message: "query valid",
+				query: queryvalid
+			}
+		}
+		this.getindex = function(db,query){
+			const res = {
+				status: 300,
+				message: "index not found",
+			}
+			let indexdeleted = -1
+			const qentrie = Object.entries(query)
+			for(let i = 0; i < db.length; i++){
+				for(let j = 0; j < qentrie.length; j++){
+					const keyselected = qentrie[j][0]
+					if(query[keyselected] != db[i][keyselected]){
+						continue
+					}
+					indexdeleted = i
+				}
+				if(indexdeleted != -1){
+					res.status = 200
+					res.message = "success get index"
+					res.index = i
+					break
+				}
+			}
+			return res
+		}
+	}
+
+	createModel(payload){
+		const model = this.model(payload)
+		if(model.status === 200){
+			const db = this.getlocal()
+			db.push(model.payload)
+			this.setlocal(db)
+			return {
+				status: 200,
+				message: "success create new data"
+			}
+		}
+		return model
+	}
+
+	readModel(query){
+		const db = this.getlocal()
+		const getall = () => {
+			return {
+				status: 200,
+				message: "success get all data",
+				data: db
+			}
+		}
+
+		if(query){
+			const q = this.validasiquery(query)
+			if(q.status === 200){
+				const qentrie = Object.entries(q.query)
+
+				if(qentrie.length < 1){
+					return getall()
+				}
+
+				const dbfilter = db.filter(item => {
+					let res = true
+					for(let i = 0; i < qentrie.length; i++){
+						const key = qentrie[i][0]
+						if(q.query[key] != item[key]){
+							res = false
+						}
+						if(!res) return false
+					}
+					return res
+				})
+				return {
+					status: 200,
+					message: "success get data",
+					data: dbfilter
+				}
+			}
+			return q
+		}
+		return getall()
+	}
+
+	deleteModel(query){
+
+		if(query){
+			const q = this.validasiquery(query)
+
+			if(q.status === 200){
+
+				const qentrie = Object.entries(q.query)
+
+				if(qentrie.length < 1){
+					return {
+						status: 300,
+						message: "error query"
+					}
+				}
+
+				const db = this.getlocal()
+
+				// mencari index dengan query terkirim
+				const getindex = this.getindex(db,query)
+				if(getindex.index >= 0){
+					db.splice(getindex.index,1)
+					this.setlocal(db)
+					return {
+						status: 200,
+						message: "success deleted data"
+					}
+				}
+				return {
+					status: 300,
+					message: "failed deleted data because query not matching"
+				}
+			}
+
+			return q
+		}
+		return {
+			status: 300,
+			message: "empty query"
+		}
+	}
+
+	updateModel(targetq,newq){
+
+
+		if(targetq && newq){
+			const vtargetq = this.validasiquery(targetq)
+			const vnewq = this.validasiquery(newq)
+
+			if(vtargetq.status === 200 && vnewq.status === 200){
+
+				const tqentrie = Object.entries(vtargetq.query)
+
+				if(tqentrie.length < 1){
+					return {
+						status: 300,
+						message: "query or target is not valid"
+					}
+				}
+
+				const db = this.getlocal()
+				// mencari index dengan query terkirim
+				const getindex = this.getindex(db,vtargetq.query)
+				if(getindex.index >= 0){
+					db[getindex.index] = {
+						...db[getindex.index],
+						...vnewq.query
+					}
+					this.setlocal(db)
+					return {
+						status: 200,
+						message: "success upadated data"
+					}
+				}
+
+				return {
+					status: 300,
+					message: "failed updated data because query not matching"
+				}
+			}
+			return q
+		}
 
 		return {
-			...item,
-			checklist: convert
-		}
-	})
-
-	
-
-	return result;
-}
-
-function data_wait_or_no(data,wait){
-	return data
-	.map(item => {
-		if(waitIsFinish(item.wait)){
-			item.wait = 0
-		}
-		return item
-	})
-	.filter(item => wait ? item.wait > 0 : item.wait <= 0)
-}
-
-function set_data_storage(data){
-	if(data){
-		localStorage.setItem('daily-task',typeof data == 'string' ? data : JSON.stringify(data))
-	}
-}
-
-function edit_data(item_name,checklist,priority_level,id,wait){
-
-	validasiInputLabel(item_name)
-
-	const data = get_data_storage()
-
-	return data.map(item => {
-		if(item.id == id){
-			return {
-				item_name,
-				checklist,
-				priority_level,
-				id,
-				wait
-			}
-		}
-		return item
-	})
-}
-
-function add_data(item_name){
-
-	validasiInputLabel(item_name)
-
-	const data_awal = get_data_storage()
-	const list_id = data_awal.map(x => x.id)
-
-	data_awal.push({
-		item_name,
-		checklist: { checklist: false },
-		priority_level: 0,
-		id: buat_ID(list_id),
-		wait: 0
-	})
-
-	return data_awal
-}
-
-function delete_data(id){
-	return get_data_storage().filter(item => item.id != id)
-}
-
-function sort_data(data){
-	const priority_level = data.sort((x,y) => x.priority_level - y.priority_level).reverse()
-	const checklist = priority_level.filter(x => {if(!x.checklist.checklist) return x}).concat(data.filter(x => {if(x.checklist.checklist) return x}))
-	return checklist
-}
-
-function set_to_server(){
-	let req = new XMLHttpRequest();
-    req.onreadystatechange = () => {
-        if (req.readyState == XMLHttpRequest.DONE) {
-
-            if (req.status == 200) {
-                alert('SUCCESS UPDATE TO SERVER')
-            } else {
-                alert('FAILED UPDATE TO SERVER')
-            }
-        }
-    };
-
-    req.open("PUT", `https://api.jsonbin.io/v3/b/${BIN_ID}`, true);
-    req.setRequestHeader("Content-Type", "application/json");
-    req.setRequestHeader("X-Master-Key", X_MASTER_KEY);
-    req.send(JSON.stringify(get_data_storage()))
-	return 0
-}
-
-function get_from_server(){
-
-	let req = new XMLHttpRequest();
-    req.onreadystatechange = () => {
-
-        if (req.readyState == XMLHttpRequest.DONE) {
-
-        	if (req.status == 200) {
-            	set_data_storage(JSON.parse(req.responseText).record)
-                reload()
-            } else {
-                alert('FAILED GET DATA FROM SERVER')
-            }
-        }
-    };
-
-    req.open("GET", `https://api.jsonbin.io/v3/b/${BIN_ID}`, true);
-    req.setRequestHeader("X-Master-Key", X_MASTER_KEY);
-    req.send();
-
-    return 0
-}
-
-// hapus ceklist jika sudah hari besok
-function cekChecklist(data){
-	return data.map(item => {
-
-		if(item.checklist.checklist){
-			const waktuItem = new Date(item.checklist.time);
-			const waktuEsok = new Date(waktuItem.getFullYear(),waktuItem.getMonth(),waktuItem.getDate() + 1);
-
-			console.log('waktu sekarang')
-			console.log(Date.now())
-			console.log('waktu waktu item')
-			console.log(item.checklist.time)
-
-			if(Date.now() < item.checklist.time || Date.now() >= waktuEsok.getTime()){
-				return {...item, checklist: { checklist: false }};
-			}
-
-		}
-
-	return item
-
-	})
-}
-
-
-// HTML
-function innerHTML(data){
-	const container = container_daftar_items
-
-	const priority2 = data.filter(item => item.priority_level == 2 && !item.checklist.checklist)
-	const priority1 = data.filter(item => item.priority_level == 1 && !item.checklist.checklist)
-	const priority0 = data.filter(item => item.priority_level == 0 && !item.checklist.checklist)
-	const checklist = data.filter(item => item.checklist.checklist)
-
-	if(priority2.length){
-		const div = document.createElement('div')
-		priority2.forEach(item => {
-			div.appendChild(buat_element(item))
-		})
-		container.appendChild(div)
-	}
-	if(priority1.length){
-		const div = document.createElement('div')
-		priority1.forEach(item => {
-			div.appendChild(buat_element(item))
-		})
-		container.appendChild(div)
-	}
-	if(priority0.length){
-		const div = document.createElement('div')
-		priority0.forEach(item => {
-			div.appendChild(buat_element(item))
-		})
-		container.appendChild(div)
-	}
-	if(checklist.length){
-		const div = document.createElement('div')
-		checklist.forEach(item => {
-			div.appendChild(buat_element(item))
-		})
-		container.appendChild(div)
-	}
-}
-
-function buat_element(items){
-	const li = document.createElement('li')
-
-	const span = document.createElement('span')
-	li.appendChild(span)
-	span.innerText = items.item_name
-	li.style.fontStyle = items.checklist.checklist ? 'italic' : 'normal'
-	li.style.color = items.checklist.checklist ? 'gray' : 'black'
-
-	const checkbox = document.createElement('i')
-	li.appendChild(checkbox)
-	checkbox.addEventListener('dblclick', e => {
-		set_data_storage(edit_data(items.item_name,{checklist: !items.checklist.checklist, time: Date.now()},items.priority_level,items.id,items.wait))
-		reload()
-	})
-
-	const div = document.createElement('div')
-	li.appendChild(div)
-
-	const i3 = document.createElement('i')
-	div.appendChild(i3)
-	i3.innerText = 'W'
-	i3.addEventListener('click',() => {
-		if(waitIsFinish(items.wait)){
-			create_element_input('wait',items)
-		}else{
-			set_data_storage(edit_data(items.item_name,items.checklist,items.priority_level,items.id, 0))
-			reload()
-		}
-	})
-
-	if(items.priority_level == 1 && index){
-		const i = document.createElement('i')
-		div.appendChild(i)
-		i.innerText = '+'
-		i.addEventListener('click',() => {
-			set_data_storage(edit_data(items.item_name,items.checklist,++items.priority_level,items.id,items.wait))
-			reload()
-		})
-		const i2 = document.createElement('i')
-		div.appendChild(i2)
-		i2.innerText = '-'
-		i2.addEventListener('click',() => {
-			set_data_storage(edit_data(items.item_name,items.checklist,--items.priority_level,items.id,items.wait))
-			reload()
-		})
-
-	}else if(index){
-		const item_condition = items.priority_level == 0
-		const i = document.createElement('i')
-		div.appendChild(i)
-		i.innerText =  item_condition ? '+' : '-'
-		i.addEventListener('click',() => {
-			set_data_storage(edit_data(items.item_name,items.checklist,item_condition ? ++items.priority_level : --items.priority_level,items.id,items.wait))
-			reload()
-		})
-	}
-
-	const edit = document.createElement('i')
-	div.appendChild(edit)
-	edit.innerText = 'E'
-	edit.addEventListener('click',() => {
-		create_element_input('edit',items)
-	})
-
-	const hapus = document.createElement('i')
-	div.appendChild(hapus)
-	hapus.innerText = 'x'
-	hapus.addEventListener('click',() => {
-		set_data_storage(delete_data(items.id))
-		reload()
-	})
-
-	return li
-}
-
-function create_element_input(type,item){
-	const container = document.querySelector('body')
-
-	const input_container = document.createElement('div')
-	input_container.classList.add('input-container')
-	container.appendChild(input_container)
-
-	const input_box = document.createElement('div')
-	input_box.classList.add('input-box')
-	input_container.appendChild(input_box)
-
-	const i = document.createElement('i')
-	i.innerText = 'X'
-	i.addEventListener('click',() => {
-		input_container.remove()
-	})
-	input_box.appendChild(i)
-
-	const input = document.createElement('input')
-	const button = document.createElement('button')
-
-	if(type === 'add'){
-		input.type = 'text'
-		input.placeholder = 'Input Items'
-		button.innerText = 'add'
-	}else if(type === 'edit'){
-		input.type = 'text'
-		input.value = item.item_name
-		input.placeholder = 'Input Items'
-		button.innerText = 'edit'
-	}else{
-		const span = document.createElement('span')
-		input_box.appendChild(span)
-		input.type = 'range'
-		input.min = 1
-		input.max = 210
-		input.step = 1
-		input.value = 0
-		span.innerText = convertWaktuMenit(+input.value)
-		button.innerText = 'wait'
-		input.addEventListener('touchmove', () => {
-			span.innerText = convertWaktuMenit(+input.value)
-		})
-		input.addEventListener('mousemove', () => {
-			span.innerText = convertWaktuMenit(+input.value)
-		})
-	}
-
-	button.addEventListener('click',() => {
-		if(type === 'edit'){
-			set_data_storage(edit_data(input.value,item.checklist,item.priority_level,item.id,item.wait))
-		}else if(type === 'add'){
-			set_data_storage(add_data(input.value))
-		}else{
-			set_data_storage(edit_data(item.item_name,item.checklist,item.priority_level,item.id, +input.value * 60000 + Date.now()))
-		}
-		reload()
-	})
-
-	input_box.appendChild(input)
-	input_box.appendChild(button)
-}
-
-function reload(){
-	return window.location.reload()
-}
-
-
-// LOGIC
-function buat_ID(ids){
-	let id = 0
-
-	ids = [...new Set(ids.sort((x,y) => x - y))]
-
-	for(let i = 0; i < ids.length; i++){
-		if (id != ids[i]){
-			break
-		}else{
-			id++  
+			status: 300,
+			message: "query or target is not valid"
 		}
 	}
 
-	return id
 }
 
-function waitIsFinish(time){
-	return time < Date.now() ? true : false
-}
+class Controllers extends Models {
 
-function validasiInputLabel(label){
-	if(label.trim().length == 0){
-		throw new Error()
+	constructor(){
+		super()
 	}
-}
 
-function convertWaktuMenit(time){
-	if(time < 60){
-		return `${time} Menit`
-	}else{
-		const jam = ~~(time/60)
-		const menit = time%60
-		return `${jam ? jam + ' Jam' : ''} ${menit ? menit + ' Menit' : ''}`
+	set createController(payload){
 	}
+
+	readController(query){
+		return this.readModel(query)	
+	} 
+
+	set deleteController(payload){
+	}
+
+	set updateController(payload){
+	}
+
 }
 
+class Views extends Controllers {
+	constructor(){
+		super()
+		this.root = $("body")
+	}
 
-innerHTML(sort_data(data_wait_or_no(get_data_storage(),root.id == 'wait' ? true : false)))
+	status(){
+		
+	}
+
+}
+
+const db = new Databases()
+const model = new Models()
+const controller = new Controllers()
+const view = new Views()
+
+// model.createModel({ item_name: "Belajar React Native" })
+// model.deleteModel({ id: 1693471635333 })
+// model.updateModel({ id: 1693473459237 }, { priority_level: 333 })
+
+// function set_to_server(){
+// 	let req = new XMLHttpRequest();
+//     req.onreadystatechange = () => {
+//         if (req.readyState == XMLHttpRequest.DONE) {
+
+//             if (req.status == 200) {
+//                 alert('SUCCESS UPDATE TO SERVER')
+//             } else {
+//                 alert('FAILED UPDATE TO SERVER')
+//             }
+//         }
+//     };
+
+//     req.open("PUT", `https://api.jsonbin.io/v3/b/${BIN_ID}`, true);
+//     req.setRequestHeader("Content-Type", "application/json");
+//     req.setRequestHeader("X-Master-Key", X_MASTER_KEY);
+//     req.send(JSON.stringify(db.getlocal))
+// 	return 0
+// }
+
+// function get_from_server(){
+
+// 	let req = new XMLHttpRequest();
+//     req.onreadystatechange = () => {
+
+//         if (req.readyState == XMLHttpRequest.DONE) {
+
+//         	if (req.status == 200) {
+//             	db.setlocal(JSON.parse(req.responseText).record)
+//                 reload()
+//             } else {
+//                 alert('FAILED GET DATA FROM SERVER')
+//             }
+//         }
+//     };
+
+//     req.open("GET", `https://api.jsonbin.io/v3/b/${BIN_ID}`, true);
+//     req.setRequestHeader("X-Master-Key", X_MASTER_KEY);
+//     req.send();
+
+//     return 0
+// }

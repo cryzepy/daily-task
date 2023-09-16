@@ -1,32 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-	<title>Daily Task</title>
-	<link rel="stylesheet" href="style.css">
-	<meta charset="utf-8" name="viewport" content="user-scalable=no,width=device-width">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body id="index">
-	<nav class="navbar">
-		<h1>Daily Task</h1>
-		<ul class="set-data">
-			<li id="set-data">Set</li>
-			<li id="get-data">Get</li>
-		</ul>
-	</nav>
+<body>
 
-	<i id="add-item" class="center">+</i>
-	<ol>
-		<div class="header">
-			<a href="#" class="active">
-				<span id='btn-now'>now</span>
-			</a>
-			<a href="wait.html">
-				<span id='btn-wait'>wait</span>
-			</a>
+	<div class="container">
+		<div class="cloud-action">
+			<button>GET</button>
+			<button>SET</button>
 		</div>
-		<ol class="content" id="daftar-items"></ol>
-	</ol>
+		<div class="content">
+			<h1 class="heading">Daily Task</h1>
+			<ul>
+				<li>
+					<div class="left">
+						<span>Belajar Mysql</span>
+					</div>
+					<div class="right action">
+						<button>edit</button>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
 
-	<script src="script.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+  <script src="script.js"></script>
 </body>
 </html>
