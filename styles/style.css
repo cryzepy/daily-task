@@ -93,8 +93,8 @@ button {
 .container .cloud-action {
 	display: flex;
 	justify-content: end;
-	padding: .65rem 1rem;
-	gap: 0.3rem
+	gap: 0.35rem;
+	padding: 0.3rem;
 }
 
 .cloud-action .btn-get {
@@ -121,6 +121,7 @@ button {
 	display: block;
 	text-align: center;
 	font-size: 11.5px;
+	padding: 1rem;
 }
 
 .content .heading {
@@ -128,7 +129,7 @@ button {
 	font-family: "Poppins Extrabold";
 	text-align: center;
 	font-size: 1.45rem;
-	margin-bottom: 1rem;
+	margin: 1.1rem;
 }
 
 .container .content .btn-create {
