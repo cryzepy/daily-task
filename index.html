@@ -1,34 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="styles/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="cloud-action">
+        <button class="btn-get" id="btn-get-data-cloud">GET</button>
+        <button class="btn-set" id="btn-set-data-cloud">SET</button>
+        <button class="btn-insert" id="btn-insert-key">INSERT</button>
+      </div>
+      <div class="content" id="content">
+        <h1 class="heading">Daily Task</h1>
+        <button class="btn-create" id="btn-create">Create new Task</button>
+        <div class="tasks" id="tasks"></div>
+      </div>
+    </div>
 
-	<!-- edit from git 12.50 -->
-
-	<div class="container">
-		<div class="cloud-action">
-			<button>GET</button>
-			<button>SET</button>
-		</div>
-		<div class="content">
-			<h1 class="heading">Daily Task</h1>
-			<ul>
-				<li>
-					<div class="left">
-						<span>Belajar Mysql</span>
-					</div>
-					<div class="right action">
-						<button>edit</button>
-					</div>
-				</li>
-			</ul>
-		</div>
-	</div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-  <script src="script.js"></script>
-</body>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+      integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+      crossorigin="anonymous"
+    ></script>
+    <script src="script.js"></script>
+  </body>
 </html>

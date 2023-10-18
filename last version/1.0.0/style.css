@@ -1,0 +1,206 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+:root{
+	font-size: 16px;
+	background: black;
+	font-family: arial;
+	margin: 0 .7vw;
+
+}
+li{
+	list-style: none;
+}
+.navbar{
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	padding: .5rem .3rem;
+}
+.set-data{
+	display: flex;
+	column-gap: .5rem;
+}
+.set-data li{
+	background: white;
+	font-weight: bold;
+	padding: .1rem .4rem;
+	border-radius: 3px;
+	cursor: pointer;
+	user-select: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.set-data li:hover{
+	background: black;
+	color: white
+}
+h1{
+	color: white;
+	cursor: pointer;
+	user-select: none;
+	font-size: 1.4rem
+}
+i#add-item{
+	cursor: pointer;
+	background: white;
+	color: black;
+	display: flex;
+	width: 2rem;
+	height: 2rem;
+	justify-content: center;
+	align-items: center;
+	margin: 1rem 50%;
+	transform: translateX(-50%);
+	border-radius: 3px;
+	user-select: none;
+	font-weight: bold;
+	border: 1px solid white;
+	transition: .2s
+}
+i#add-item:hover{
+	background-color: black;
+	color: white
+}
+.header{
+	background-color: white;
+	border-radius: 4px 4px 0 0;
+	display: flex;
+	justify-content: space-around;
+	overflow: hidden;
+}
+.header a{
+	padding: 6px;
+	background-color: white;
+	color: black;
+	font-weight: bold;
+	cursor: pointer;
+	text-decoration: none
+}
+.header a.active{
+	background-color: red;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	background-color: black;
+	color: white;
+}
+#daftar-items li{
+	background: white;
+	padding: .5rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: bold;
+	cursor: pointer;
+	position: relative;
+	overflow-x: hidden;
+}
+#daftar-items li > i{
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,.0);
+}
+#daftar-items > div{
+	padding: .2rem 0;
+}
+#daftar-items li div{
+	display: flex;
+	column-gap: .5rem
+}
+#daftar-items li div i{
+	transform: translateX(370%);
+	filter: opacity(0);
+	transition: transform .5s;
+	cursor: pointer;
+	background: black;
+	color: white;
+	width: 1.7rem;
+	height: 1.7rem;
+	border-radius: 3px;
+	text-align: center;
+	line-height: 1.7rem;
+	font-style: normal;
+	border: 1.5px solid black;
+	user-select: none;
+	transition: .3s
+}
+#daftar-items li div i:hover{
+	background-color: white;
+	color: black;
+	border: 1.5px solid gray;
+}
+#daftar-items li:hover div i{
+	transform: translateX(0);
+	filter: opacity(1);
+}
+div.input-container{
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	background: rgba(0,0,0,.85);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+div.input-container .input-box{
+	background: white;
+	padding: 5rem 6rem;
+	display: flex;
+	gap: .8rem;
+	align-items: center;
+	flex-direction: column;
+	position: relative;
+	border-radius: 3px;
+	box-sizing: border-box;
+	max-width: 90%
+}
+div.input-container .input-box i{
+	position: absolute;
+	top: -6%;
+	right: -3%;
+	cursor: pointer;
+	background: rgb(255, 0, 0);
+	padding: .4rem .65rem;
+	font-style: normal;
+	color: white;
+	border-radius: 50%;
+}
+div.input-container .input-box i:hover{
+	background-color: rgb(245, 0, 0);
+}
+div.input-container .input-box span{
+	font-family: arial;
+	font-style: italic;
+	color: gray
+}
+div.input-container .input-box input{
+	user-select: none;
+	font-size: 1rem;
+	padding: .7rem 0;
+	text-align: center;
+	outline: none;
+	border: 2px solid gray;
+	border-radius: 3px;
+	color: gray
+}
+div.input-container .input-box button{
+	width: max-content;
+	padding: .48rem .9rem;
+	font-size: .85rem;
+	background-color: gray;
+	color: white;
+	border-radius: 3px;
+	border: none;
+}
+div.input-container .input-box button:hover{
+	background-color: rgba(0,0,0,.19);
+}

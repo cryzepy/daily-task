@@ -1,0 +1,338 @@
+/* Reset CSS */
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  user-select: none;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* My Style  */
+
+@font-face {
+  font-family: "Poppins ExtraBold";
+  src: url("../assets/fonts/Poppins-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "Poppins Light";
+  src: url("../assets/fonts/Poppins-Light.ttf");
+}
+
+@font-face {
+  font-family: "Poppins LightItalic";
+  src: url("../assets/fonts/Poppins-LightItalic.ttf");
+}
+
+:root {
+  --blue: #3760ef;
+  --green: #3cef63;
+  --white: #fdfdfd;
+  --red: #fe3a50;
+  --low-blue: #70e6e6;
+  --bg-nonactive: #dfdfdf;
+  --gray: #828282;
+  --bg-black: rgba(0, 0, 0, 0.2);
+  --bg-gray: #ededed;
+  --yellow: #fbff48;
+}
+
+body {
+  background-color: var(--blue);
+}
+
+button {
+  border: none;
+  color: var(--white);
+  font-weight: bold;
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 0.45rem 0.5rem;
+  cursor: pointer;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.container {
+  position: fixed;
+  background-color: var(--bg-black);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container .input-container {
+  background-color: var(--white);
+  padding: 1.75rem 1.85rem;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.7rem;
+  box-sizing: border-box;
+  width: 96%;
+  max-width: 30rem;
+}
+
+.container .input-container .form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-container .form .task-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-container .form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.form div label {
+  color: var(--blue);
+  font-family: "Poppins Light";
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.form .waiting-time .input {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 1rem;
+  justify-content: start;
+}
+
+#inp-wait-mode1 {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.input-container div input {
+  background-color: var(--bg-gray);
+  border: none;
+  outline: none;
+  padding: 0.6rem 0.7rem;
+  border-radius: 3px;
+  font-family: "Poppins Light";
+}
+
+.input input[type="number"] {
+  width: 3rem;
+}
+
+.waiting-time .input .btn-container {
+  display: flex;
+  gap: 0.7rem
+}
+
+.input button {
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.input button.switch {
+  background-color: var(--yellow);
+}
+
+.input button.reset {
+  background-color: var(--red);
+}
+
+.form .priority .actions {
+  display: flex;
+  gap: 0.2rem;
+  align-items: center;
+}
+
+.priority .actions input[type="number"] {
+  width: 4rem;
+  height: 2rem;
+  padding: 0;
+  text-align: center;
+}
+
+.priority .actions button {
+  width: 2rem;
+  height: 2rem;
+}
+
+.priority .actions .increment {
+  background-color: var(--low-blue);
+}
+
+.priority .actions .decrement {
+  background-color: var(--red);
+}
+
+.input-container .delete button.del {
+  background-color: var(--red);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  font-weight: normal;
+}
+
+.container > .input-container > .actions {
+  display: flex;
+  justify-content: end;
+  gap: 0.425rem;
+}
+
+.input-container > .actions button {
+  font-family: "Poppins ExtraBold";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.7rem;
+}
+
+.input-container > .actions .cancel {
+  background-color: var(--red);
+}
+
+.input-container > .actions .ok {
+  background-color: var(--green);
+  width: 9rem;
+}
