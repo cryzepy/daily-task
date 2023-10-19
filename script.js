@@ -698,12 +698,6 @@ class Views extends Controllers {
       window.location = "form.html?mode=add";
     });
 
-    $(document).ready(() => {
-      setInterval(() => {
-        this.cekFinishedWaiting();
-      }, 60000);
-    });
-
     $("#btn-get-data-cloud").dblclick(() => {
       this.getcloudController();
     });

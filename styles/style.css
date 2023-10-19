@@ -161,10 +161,14 @@ button {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 3.5px;
+	gap: 1rem
 }
-
 .active li span {
 	font-size: 0.8rem;
+}
+
+li .label {
+	overflow: hidden;
 }
 
 li .label span.wait {
