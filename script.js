@@ -226,7 +226,7 @@ class Databases {
 
     let req = new XMLHttpRequest();
 
-    const data = this.getlocal()
+    const data = this.getlocal();
 
     req.onreadystatechange = () => {
       if (req.readyState == XMLHttpRequest.DONE) {
@@ -510,14 +510,16 @@ class Views extends Controllers {
 
       let lenactive = 0;
 
-      parsedata.priority_level.forEach((tasks) => {
-        const ul = $("<ul class='active'></ul>");
+      const lengul = parsedata.priority_level.length;
+      parsedata.priority_level.forEach((tasks, index) => {
+        const ul = $(
+          `<ul class='active${index + 1 >= lengul ? " last" : ""}'></ul>`
+        );
         this.container.append(ul);
         tasks.forEach((task) => {
           lenactive++;
           const li = this.createlielement(task);
           ul.append(li);
-
           this.checklistToggle(li, task.id, task.checklist.status);
         });
       });
@@ -607,9 +609,9 @@ class Views extends Controllers {
     const now = Date.now();
     const gap = target - now;
 
-    const day = parseInt(gap / 1000 / 60 / 60 / 24);
-    const hour = parseInt((gap / 1000 / 60 / 60) % 24);
-    const minute = parseInt(((gap / 1000 / 60) % 60) % 24);
+    const day = ~~(gap / 60000 / 60 / 24);
+    const hour = ~~(gap / 60000 / 60) % 24;
+    const minute = ~~(gap / 60000) % 60;
 
     if (!day && !hour && !minute) return "Beberapa saat lagi";
 

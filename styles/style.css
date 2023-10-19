@@ -136,7 +136,7 @@ button {
 	background-color: var(--green);
 }
 
-.tasks ul:not(.task-waiting,.task-completed)::after {
+.tasks ul:not(.task-waiting,.task-completed,.active.last)::after {
 	content: "";
 	display: block;
 	background-color: var(--white);

@@ -13,8 +13,8 @@ function parseBool(t, b) {
 
 function convertToTime(time) {
   const day = ~~(time / 60000 / 60 / 24);
-  const hour = ~~((time / 60000 / 60) % 24);
-  const minute = ~~(((time / 60000) % 60) % 24);
+  const hour = ~~(time / 60000 / 60 % 24);
+  const minute = ~~(time / 60000 % 60);
   return { day, hour, minute };
 }
 
@@ -49,7 +49,7 @@ function convertToCalender(time) {
   }`;
 }
 
-function getminmaxpriority(data, idTarget) {
+function getminmaxpriority(data) {
   const result = {};
 
   for (let task of data) {
@@ -261,6 +261,13 @@ $(document).ready(function () {
       inpContainer.append(actions);
 
       $("#btn-confirm-form").click(function () {
+
+        const payload = {
+          day: parseText($("#inp-day").val()),
+          hour: parseText($("#inp-hour").val()),
+          minute: parseText($("#inp-minute").val()),
+        };
+
         if (mode === "edit") {
           let time = Date.now() - 1;
 
@@ -277,6 +284,7 @@ $(document).ready(function () {
               payload.hour,
               payload.minute
             );
+            
           } else {
             time = new Date($("#inp-wait-mode2").val()).getTime();
           }
@@ -302,6 +310,7 @@ $(document).ready(function () {
 
           if (send.status === 200) window.location.href = "index.html";
           else alert(send.message);
+          
         } else {
           const send = view.createController({
             item_name: $("#task-name").val(),
@@ -331,8 +340,8 @@ $(document).ready(function () {
       try {
         const value = $("#inp-priority_level");
         const int = parseInt(value.val());
-        if (int < range.min) {
-          value.val(range.min - 1);
+        if (int <= range.min) {
+          value.val(range.min);
         } else {
           value.val(int - 1);
         }
