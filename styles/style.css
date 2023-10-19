@@ -161,14 +161,12 @@ button {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 3.5px;
-	gap: 1rem
-}
-.active li span {
-	font-size: 0.8rem;
+	gap: 1rem;
+	overflow-x: hidden;
 }
 
-li .label {
-	overflow: hidden;
+.active li span {
+	font-size: 0.8rem;
 }
 
 li .label span.wait {
@@ -192,6 +190,9 @@ li .label span.checklist {
 	display: flex;
 	flex-direction: column;
 	gap: 0.4rem;
+	padding: .3rem;
+	overflow:hidden;
+	word-wrap: break-word;
 }
 
 .label .time {
