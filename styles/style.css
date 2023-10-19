@@ -190,7 +190,6 @@ li .label span.checklist {
 	display: flex;
 	flex-direction: column;
 	gap: 0.4rem;
-	padding: .3rem;
 	overflow:hidden;
 	word-wrap: break-word;
 }
