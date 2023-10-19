@@ -190,8 +190,9 @@ li .label span.checklist {
 	display: flex;
 	flex-direction: column;
 	gap: 0.4rem;
-	overflow:hidden;
+	overflow: hidden;
 	word-wrap: break-word;
+	padding: 1px;
 }
 
 .label .time {
