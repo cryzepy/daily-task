@@ -2,6 +2,7 @@
 
 <div>
 	<h1>Fitur App</h1>
+	<p>webapp ini dibuat untuk manejemen tugas/task harian, dengan fitur-fitur:</p>
 	<ol>
 		<li>menambahkan, mengedit, melihat dan menghapus tugas</li>
 		<li>menunda tugas dengan waktu tertentu</li>
