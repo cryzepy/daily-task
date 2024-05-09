@@ -8,6 +8,6 @@
 		<li>menunda tugas dengan waktu tertentu</li>
 		<li>mempriotaskan tugas</li>
 		<li>melihat status tugas harian</li>
-    <li>menyimpan tugas ke penyimpanan browser dan cloud (untuk penyimpanan cloud masih terbatas)</li>
+ 		<li>menyimpan tugas ke penyimpanan browser dan cloud (untuk penyimpanan cloud masih terbatas)</li>
 	</ol>
 </div>
