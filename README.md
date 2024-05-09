@@ -8,8 +8,7 @@
 		<li>menunda tugas dengan waktu tertentu</li>
 		<li>mempriotaskan tugas</li>
 		<li>melihat status tugas</li>
-    <li>menyimpan tugas ke localstorage (tersimpan walau browser ditutup)</li>
-    <li>fitur get dan set data ke cloud dibatasi oleh developer</li>
+    <li>menyimpan tugas ke penyimpanan browser dan cloud (untuk penyimpanan cloud masih terbatas)</li>
 	</ol>
 </div>
 
