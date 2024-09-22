@@ -262,6 +262,8 @@ $(document).ready(function () {
 
       $("#btn-confirm-form").click(function () {
 
+     
+
         const payload = {
           day: parseText($("#inp-day").val()),
           hour: parseText($("#inp-hour").val()),
@@ -308,6 +310,7 @@ $(document).ready(function () {
             data: payload,
           });
 
+
           if (send.status === 200) window.location.href = "index.html";
           else alert(send.message);
           
@@ -316,12 +319,8 @@ $(document).ready(function () {
             item_name: $("#task-name").val(),
             priority_level: parseText($("#inp-priority_level").val()),
           });
-
-          if (send.status === 200) {
-            window.location.href = "index.html";
-          } else {
-            alert(send.message);
-          }
+          if (send.status === 200) window.location.href = "index.html";
+          else alert(send.message);
         }
       });
 

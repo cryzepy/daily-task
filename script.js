@@ -3,7 +3,7 @@ class Databases {
     this.dbname = "daily-task";
     this.dbencryption = "daily-task-enc";
     this.model = function (payload) {
-      const itemnamemax = 128;
+      const itemnamemax = 256;
 
       const result = {
         status: 200,
@@ -249,41 +249,6 @@ class Databases {
 class Models extends Databases {
   constructor() {
     super();
-    this.totalitem = 5;
-    this.validasiquery = function (query) {
-      const queryerror = {
-        status: 300,
-        message: "query error",
-      };
-      const queryvalid = {};
-      if (!query) return queryerror;
-
-      if (typeof query != "object") return queryerror;
-
-      const model = this.model({ item_name: "example" });
-      const queryentrie = Object.entries(query);
-
-      if (queryentrie.length > this.totalitem) return queryerror;
-
-      let wrongquery = 0;
-
-      for (let i = 0; i < queryentrie.length; i++) {
-        const [keyquery, valuequery] = queryentrie[i];
-        if (model.payload[keyquery] === undefined) {
-          wrongquery += 1;
-        } else {
-          queryvalid[keyquery] = valuequery;
-        }
-
-        if (wrongquery > 1) return queryerror;
-      }
-
-      return {
-        status: 200,
-        message: "query valid",
-        query: queryvalid,
-      };
-    };
     this.getindex = function (db, query) {
       const res = {
         status: 300,
@@ -324,80 +289,42 @@ class Models extends Databases {
     return model;
   }
 
-  readModel(query) {
+  readModel() {
     const db = this.getlocal();
-    const getall = () => {
-      return {
-        status: 200,
-        message: "success get all data",
-        data: db,
-      };
-    };
-
-    if (query) {
-      const q = this.validasiquery(query);
-      if (q.status === 200) {
-        const qentrie = Object.entries(q.query);
-
-        if (qentrie.length < 1) {
-          return getall();
-        }
-
-        const dbfilter = db.filter((item) => {
-          let res = true;
-          for (let i = 0; i < qentrie.length; i++) {
-            const key = qentrie[i][0];
-            if (q.query[key] != item[key]) {
-              res = false;
-            }
-            if (!res) return false;
-          }
-          return res;
-        });
-        return {
-          status: 200,
-          message: "success get data",
-          data: dbfilter,
-        };
-      }
-      return q;
+    return  {
+      status: 200,
+      message: "success get all data",
+      data: db,
     }
-    return getall();
   }
 
   deleteModel(query) {
     if (query) {
-      const q = this.validasiquery(query);
+      const qentrie = Object.entries(q.query);
 
-      if (q.status === 200) {
-        const qentrie = Object.entries(q.query);
-
-        if (qentrie.length < 1) {
-          return {
-            status: 300,
-            message: "error query",
-          };
-        }
-
-        const db = this.getlocal();
-
-        // mencari index dengan query terkirim
-        const getindex = this.getindex(db, query);
-        if (getindex.index >= 0) {
-          db.splice(getindex.index, 1);
-          this.setlocal(db);
-          return {
-            status: 200,
-            message: "success deleted data",
-          };
-        }
+      if (qentrie.length < 1) {
         return {
           status: 300,
-          message: "failed deleted data because query not matching",
+          message: "error query",
         };
       }
 
-      return q;
+      const db = this.getlocal();
+
+      // mencari index dengan query terkirim
+      const getindex = this.getindex(db, query);
+      if (getindex.index >= 0) {
+        db.splice(getindex.index, 1);
+        this.setlocal(db);
+        return {
+          status: 200,
+          message: "success deleted data",
+        };
+      }
+      return {
+        status: 300,
+        message: "failed deleted data because query not matching",
+      };
     }
     return {
       status: 300,
@@ -406,47 +333,24 @@ class Models extends Databases {
   }
 
   updateModel(targetq, newq) {
-    if (targetq && newq) {
-      const vtargetq = this.validasiquery(targetq);
-      const vnewq = this.validasiquery(newq);
-
-      if (vtargetq.status === 200 && vnewq.status === 200) {
-        const tqentrie = Object.entries(vtargetq.query);
-
-        if (tqentrie.length < 1) {
-          return {
-            status: 300,
-            message: "query or target is not valid",
-          };
-        }
-
-        const db = this.getlocal();
-        // mencari index dengan query terkirim
-        const getindex = this.getindex(db, vtargetq.query);
-        if (getindex.index >= 0) {
-          db[getindex.index] = {
-            ...db[getindex.index],
-            ...vnewq.query,
-          };
-          this.setlocal(db);
-          return {
-            status: 200,
-            message: "success upadated data",
-          };
-        }
-
-        return {
-          status: 300,
-          message: "failed updated data because query not matching",
-        };
-      }
-      return q;
+    console.log(targetq)
+    const modelNewQuery = this.model(newq);
+    if (modelNewQuery.status === 200) {
+      const db = this.getlocal();
+      const newData = db.map(task => task.id == targetq.id ? modelNewQuery.payload : task)
+      this.setlocal(newData);
+      return {
+        status: 200,
+        message: "success upadated data",
+      };
+    }else{
+      return {
+        status: 300,
+        message: "query or target is not valid",
+      };
     }
+    
 
-    return {
-      status: 300,
-      message: "query or target is not valid",
-    };
   }
 
   setcloudModel() {
