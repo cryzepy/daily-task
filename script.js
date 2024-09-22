@@ -300,15 +300,6 @@ class Models extends Databases {
 
   deleteModel(query) {
     if (query) {
-      const qentrie = Object.entries(q.query);
-
-      if (qentrie.length < 1) {
-        return {
-          status: 300,
-          message: "error query",
-        };
-      }
-
       const db = this.getlocal();
 
       // mencari index dengan query terkirim
