@@ -324,8 +324,8 @@ class Models extends Databases {
   }
 
   updateModel(targetq, newq) {
-    console.log(targetq)
     const modelNewQuery = this.model(newq);
+    console.log(modelNewQuery)
     if (modelNewQuery.status === 200) {
       const db = this.getlocal();
       const newData = db.map(task => task.id == targetq.id ? modelNewQuery.payload : task)
@@ -415,7 +415,7 @@ class Views extends Controllers {
           lenactive++;
           const li = this.createlielement(task);
           ul.append(li);
-          this.checklistToggle(li, task.id, task.checklist.status);
+          this.checklistToggle(li, task);
         });
       });
 
@@ -431,7 +431,7 @@ class Views extends Controllers {
         const el = this.createlielement(task);
         ulc.append(el);
 
-        this.checklistToggle(el, task.id, task.checklist.status);
+        this.checklistToggle(el,task);
       });
 
       if (lenactive || parsedata.wait.length || parsedata.checklist.length) {
@@ -567,11 +567,11 @@ class Views extends Controllers {
     return container;
   }
 
-  checklistToggle(el, id, checklist) {
+  checklistToggle(el, task) {
     el.dblclick(() => {
       const payload = {};
 
-      if (checklist) {
+      if (task.checklist.status) {
         payload.checklist = { status: false };
       } else {
         payload.checklist = {
@@ -581,8 +581,8 @@ class Views extends Controllers {
       }
 
       this.updateController({
-        target: { id },
-        data: payload,
+        target: { id: task.id },
+        data: {...task, ...payload},
       });
       location.reload();
     });
